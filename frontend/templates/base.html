@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Research PDF Renamer{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('main.index') }}" class="nav-brand">PDF Renamer</a>
+            <div class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <span class="nav-user">{{ current_user.email }}</span>
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('main.admin') }}" class="nav-link">Admin</a>
+                    {% endif %}
+                    <button id="logout-btn" class="nav-btn">Logout</button>
+                {% else %}
+                    <a href="{{ url_for('main.login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('main.register') }}" class="nav-link nav-btn-primary">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Research PDF File Renamer - Powered by AI</p>
+    </footer>
+
+    <script>
+        // Logout handler
+        document.getElementById('logout-btn')?.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
